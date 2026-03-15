@@ -1,0 +1,130 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item active">File Repository</span>
+{% endblock %}
+
+{% block page_actions %}
+<div class="page-actions">
+    <a href="{% url 'file_upload' %}" class="btn btn-primary">⬆ Upload New File</a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Search/Filter Panel -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">🔍 Search & Filter</h3>
+    </div>
+    <div class="card-body">
+        <form method="get" class="search-form">
+            <div class="filter-grid">
+                <div class="form-group">
+                    <label class="form-label">Search</label>
+                    {{ form.query }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    {{ form.status }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    {{ form.category }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">From Date</label>
+                    {{ form.date_from }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">To Date</label>
+                    {{ form.date_to }}
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="{% url 'file_list' %}" class="btn btn-outline">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Summary -->
+<div class="results-summary">
+    <span>Showing <strong>{{ page_obj.paginator.count }}</strong> file{% if page_obj.paginator.count != 1 %}s{% endif %}</span>
+</div>
+
+<!-- File Grid -->
+{% if page_obj %}
+<div class="file-grid">
+    {% for file in page_obj %}
+    <div class="file-card">
+        <div class="file-card-header">
+            <div class="file-icon file-icon-{{ file.file_type }}">
+                {% if file.file_type in 'jpg,jpeg,png' %}🖼️
+                {% elif file.file_type in 'pdf' %}📄
+                {% elif file.file_type in 'doc,docx' %}📝
+                {% elif file.file_type in 'xls,xlsx' %}📊
+                {% elif file.file_type in 'ppt,pptx' %}📑
+                {% elif file.file_type in 'zip' %}🗜️
+                {% else %}📎{% endif %}
+            </div>
+            <span class="status-badge status-{{ file.status }}">{{ file.get_status_display }}</span>
+        </div>
+        <div class="file-card-body">
+            <h4 class="file-card-name" title="{{ file.file_name }}">
+                {{ file.file_name|truncatechars:40 }}
+            </h4>
+            <p class="file-card-meta">
+                <span>ID: <strong>{{ file.short_id }}</strong></span>
+                <span>{{ file.file_size_display }}</span>
+            </p>
+            {% if file.description %}
+            <p class="file-card-desc">{{ file.description|truncatechars:80 }}</p>
+            {% endif %}
+            <p class="file-card-date">Uploaded {{ file.upload_date|date:"d M Y" }}</p>
+            <p class="file-card-user">by {{ file.uploaded_by.get_full_name|default:file.uploaded_by.username }}</p>
+        </div>
+        <div class="file-card-actions">
+            <a href="{% url 'file_detail' file.pk %}" class="btn btn-sm btn-outline">View</a>
+            <a href="{% url 'file_retrieve' file.pk %}" class="btn btn-sm btn-success">⬇ Retrieve</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="pagination-wrapper">
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}" class="page-btn">‹ Prev</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <span class="page-btn active">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}" class="page-btn">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}" class="page-btn">Next ›</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📂</div>
+    <h3>No Files Found</h3>
+    <p>No files match your search criteria.</p>
+    <a href="{% url 'file_upload' %}" class="btn btn-primary">Upload a File</a>
+</div>
+{% endif %}
+
+{% endblock %}

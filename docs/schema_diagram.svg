@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1000 900" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="900" fill="#f0f4f8"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1000" height="65" fill="#1a5276"/>
+  <text x="500" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="white">VRA File Management System – Schema Diagram</text>
+  <text x="500" y="53" text-anchor="middle" font-size="13" fill="rgba(255,255,255,.75)">Entity Relationship Diagram with Cardinality &amp; Optionality</text>
+
+  <!-- ══ auth_user ══════════════════════════════════════════ -->
+  <rect x="30" y="90" width="200" height="220" rx="8" fill="white" stroke="#1a5276" stroke-width="2.5"/>
+  <rect x="30" y="90" width="200" height="36" rx="8" fill="#1a5276"/>
+  <rect x="30" y="118" width="200" height="8" fill="#1a5276"/>
+  <text x="130" y="113" text-anchor="middle" font-size="13" font-weight="bold" fill="white">auth_user</text>
+  <text x="40" y="148" font-size="11" fill="#333">🔑 id (PK)</text>
+  <text x="40" y="165" font-size="11" fill="#555">username (unique)</text>
+  <text x="40" y="182" font-size="11" fill="#555">email</text>
+  <text x="40" y="199" font-size="11" fill="#555">first_name</text>
+  <text x="40" y="216" font-size="11" fill="#555">last_name</text>
+  <text x="40" y="233" font-size="11" fill="#555">is_active</text>
+  <text x="40" y="250" font-size="11" fill="#555">is_staff</text>
+  <text x="40" y="267" font-size="11" fill="#555">date_joined</text>
+  <text x="40" y="284" font-size="11" fill="#555">password (hashed)</text>
+  <text x="40" y="301" font-size="11" fill="#555">last_login</text>
+
+  <!-- ══ files_userprofile ══════════════════════════════════ -->
+  <rect x="30" y="340" width="200" height="195" rx="8" fill="white" stroke="#2e86c1" stroke-width="2"/>
+  <rect x="30" y="340" width="200" height="36" rx="8" fill="#2e86c1"/>
+  <rect x="30" y="368" width="200" height="8" fill="#2e86c1"/>
+  <text x="130" y="363" text-anchor="middle" font-size="13" font-weight="bold" fill="white">files_userprofile</text>
+  <text x="40" y="393" font-size="11" fill="#333">🔑 id (PK)</text>
+  <text x="40" y="410" font-size="11" fill="#333">🔗 user_id (FK → auth_user)</text>
+  <text x="40" y="427" font-size="11" fill="#555">phone_number</text>
+  <text x="40" y="444" font-size="11" fill="#555">department</text>
+  <text x="40" y="461" font-size="11" fill="#555">employee_id</text>
+  <text x="40" y="478" font-size="11" fill="#555">receive_sms</text>
+  <text x="40" y="495" font-size="11" fill="#555">receive_email</text>
+  <text x="40" y="512" font-size="11" fill="#555">created_at</text>
+
+  <!-- ══ files_filecategory ════════════════════════════════ -->
+  <rect x="290" y="90" width="200" height="140" rx="8" fill="white" stroke="#7d3c98" stroke-width="2"/>
+  <rect x="290" y="90" width="200" height="36" rx="8" fill="#7d3c98"/>
+  <rect x="290" y="118" width="200" height="8" fill="#7d3c98"/>
+  <text x="390" y="113" text-anchor="middle" font-size="13" font-weight="bold" fill="white">files_filecategory</text>
+  <text x="300" y="148" font-size="11" fill="#333">🔑 id (PK)</text>
+  <text x="300" y="165" font-size="11" fill="#555">name</text>
+  <text x="300" y="182" font-size="11" fill="#555">description</text>
+  <text x="300" y="199" font-size="11" fill="#555">created_at</text>
+
+  <!-- ══ files_managedfile ════════════════════════════════ -->
+  <rect x="290" y="265" width="240" height="340" rx="8" fill="white" stroke="#d68910" stroke-width="2.5"/>
+  <rect x="290" y="265" width="240" height="36" rx="8" fill="#d68910"/>
+  <rect x="290" y="293" width="240" height="8" fill="#d68910"/>
+  <text x="410" y="288" text-anchor="middle" font-size="13" font-weight="bold" fill="white">files_managedfile</text>
+  <text x="300" y="318" font-size="11" fill="#333">🔑 id (PK)</text>
+  <text x="300" y="335" font-size="11" fill="#555">file_id (UUID, unique)</text>
+  <text x="300" y="352" font-size="11" fill="#555">file_name</text>
+  <text x="300" y="369" font-size="11" fill="#555">file (file path)</text>
+  <text x="300" y="386" font-size="11" fill="#555">file_size</text>
+  <text x="300" y="403" font-size="11" fill="#555">file_type</text>
+  <text x="300" y="420" font-size="11" fill="#333">🔗 category_id (FK, OPT)</text>
+  <text x="300" y="437" font-size="11" fill="#333">🔗 uploaded_by_id (FK)</text>
+  <text x="300" y="454" font-size="11" fill="#555">status</text>
+  <text x="300" y="471" font-size="11" fill="#555">upload_date</text>
+  <text x="300" y="488" font-size="11" fill="#555">last_retrieved</text>
+  <text x="300" y="505" font-size="11" fill="#555">retrieval_count</text>
+  <text x="300" y="522" font-size="11" fill="#555">reminder_sent</text>
+  <text x="300" y="539" font-size="11" fill="#555">description / tags</text>
+  <text x="300" y="556" font-size="11" fill="#555">is_active</text>
+  <text x="300" y="573" font-size="11" fill="#555">reminder_sent_at</text>
+  <text x="300" y="590" font-size="11" fill="#555">is_active</text>
+
+  <!-- ══ files_fileretrievallog ════════════════════════════ -->
+  <rect x="590" y="90" width="210" height="180" rx="8" fill="white" stroke="#1e8449" stroke-width="2"/>
+  <rect x="590" y="90" width="210" height="36" rx="8" fill="#1e8449"/>
+  <rect x="590" y="118" width="210" height="8" fill="#1e8449"/>
+  <text x="695" y="113" text-anchor="middle" font-size="13" font-weight="bold" fill="white">files_fileretrievallog</text>
+  <text x="600" y="148" font-size="11" fill="#333">🔑 id (PK)</text>
+  <text x="600" y="165" font-size="11" fill="#333">🔗 file_id (FK → managedfile)</text>
+  <text x="600" y="182" font-size="11" fill="#333">🔗 retrieved_by_id (FK, OPT)</text>
+  <text x="600" y="199" font-size="11" fill="#555">retrieved_at</text>
+  <text x="600" y="216" font-size="11" fill="#555">ip_address</text>
+  <text x="600" y="233" font-size="11" fill="#555">user_agent</text>
+
+  <!-- ══ notifications_notification ══════════════════════ -->
+  <rect x="590" y="300" width="210" height="215" rx="8" fill="white" stroke="#d68910" stroke-width="2"/>
+  <rect x="590" y="300" width="210" height="36" rx="8" fill="#e67e22"/>
+  <rect x="590" y="328" width="210" height="8" fill="#e67e22"/>
+  <text x="695" y="323" text-anchor="middle" font-size="12" font-weight="bold" fill="white">notifications_notification</text>
+  <text x="600" y="353" font-size="11" fill="#333">🔑 id (PK)</text>
+  <text x="600" y="370" font-size="11" fill="#333">🔗 user_id (FK → auth_user)</text>
+  <text x="600" y="387" font-size="11" fill="#333">🔗 file_id (FK, OPT)</text>
+  <text x="600" y="404" font-size="11" fill="#555">notification_type</text>
+  <text x="600" y="421" font-size="11" fill="#555">channel</text>
+  <text x="600" y="438" font-size="11" fill="#555">subject</text>
+  <text x="600" y="455" font-size="11" fill="#555">message</text>
+  <text x="600" y="472" font-size="11" fill="#555">status</text>
+  <text x="600" y="489" font-size="11" fill="#555">sent_at</text>
+  <text x="600" y="506" font-size="11" fill="#555">created_at</text>
+
+  <!-- ══ reminders_filereminder ═══════════════════════════ -->
+  <rect x="590" y="540" width="210" height="170" rx="8" fill="white" stroke="#c0392b" stroke-width="2"/>
+  <rect x="590" y="540" width="210" height="36" rx="8" fill="#c0392b"/>
+  <rect x="590" y="568" width="210" height="8" fill="#c0392b"/>
+  <text x="695" y="563" text-anchor="middle" font-size="13" font-weight="bold" fill="white">reminders_filereminder</text>
+  <text x="600" y="593" font-size="11" fill="#333">🔑 id (PK)</text>
+  <text x="600" y="610" font-size="11" fill="#333">🔗 file_id (FK → managedfile)</text>
+  <text x="600" y="627" font-size="11" fill="#555">scheduled_for</text>
+  <text x="600" y="644" font-size="11" fill="#555">status</text>
+  <text x="600" y="661" font-size="11" fill="#555">job_id</text>
+  <text x="600" y="678" font-size="11" fill="#555">triggered_at</text>
+  <text x="600" y="695" font-size="11" fill="#555">created_at</text>
+
+  <!-- ═══════ RELATIONSHIPS ════════════════════════════════ -->
+
+  <!-- auth_user ─── 1:1 ─── userprofile -->
+  <line x1="130" y1="310" x2="130" y2="340" stroke="#555" stroke-width="2"/>
+  <text x="135" y="322" font-size="9" fill="#555">1</text>
+  <text x="135" y="335" font-size="9" fill="#555">1</text>
+  <text x="160" y="327" font-size="9" fill="#1a5276" font-weight="bold">1:1 (mandatory)</text>
+
+  <!-- auth_user ─── 1:M ─── managedfile (uploaded_by) -->
+  <line x1="230" y1="200" x2="290" y2="430" stroke="#555" stroke-width="2" stroke-dasharray="6"/>
+  <text x="233" y="210" font-size="9" fill="#d68910">1</text>
+  <text x="268" y="425" font-size="9" fill="#d68910">0..M</text>
+  <text x="240" y="310" font-size="8" fill="#888" transform="rotate(-35 250 320)">uploads</text>
+
+  <!-- filecategory ─── 1:M (opt) ─── managedfile -->
+  <line x1="390" y1="230" x2="390" y2="265" stroke="#555" stroke-width="2"/>
+  <text x="396" y="242" font-size="9" fill="#7d3c98">1</text>
+  <text x="396" y="262" font-size="9" fill="#7d3c98">0..M</text>
+  <text x="410" y="252" font-size="8" fill="#888">categorises</text>
+
+  <!-- managedfile ─── 1:M ─── fileretrievallog -->
+  <line x1="530" y1="310" x2="590" y2="180" stroke="#555" stroke-width="2"/>
+  <text x="535" y="310" font-size="9" fill="#1e8449">1</text>
+  <text x="575" y="185" font-size="9" fill="#1e8449">0..M</text>
+  <text x="540" y="250" font-size="8" fill="#888" transform="rotate(-30 560 270)">has logs</text>
+
+  <!-- managedfile ─── 1:M ─── notification -->
+  <line x1="530" y1="410" x2="590" y2="400" stroke="#555" stroke-width="2"/>
+  <text x="535" y="408" font-size="9" fill="#e67e22">1</text>
+  <text x="578" y="396" font-size="9" fill="#e67e22">0..M</text>
+
+  <!-- managedfile ─── 1:1 (opt) ─── reminder -->
+  <line x1="530" y1="480" x2="590" y2="625" stroke="#555" stroke-width="2"/>
+  <text x="535" y="480" font-size="9" fill="#c0392b">1</text>
+  <text x="578" y="623" font-size="9" fill="#c0392b">0..1</text>
+  <text x="540" y="550" font-size="8" fill="#888" transform="rotate(25 560 570)">schedules</text>
+
+  <!-- auth_user ─── 1:M ─── notification -->
+  <line x1="230" y1="170" x2="590" y2="370" stroke="#555" stroke-width="1.5" stroke-dasharray="5"/>
+  <text x="235" y="168" font-size="9" fill="#e67e22">1</text>
+  <text x="583" y="374" font-size="9" fill="#e67e22">0..M</text>
+
+  <!-- auth_user ─── 1:M ─── retrieval log (retrieved_by) -->
+  <line x1="230" y1="155" x2="590" y2="182" stroke="#555" stroke-width="1.5" stroke-dasharray="5"/>
+  <text x="593" y="182" font-size="9" fill="#1e8449">0..M</text>
+
+  <!-- ═══════ LEGEND ════════════════════════════════════ -->
+  <rect x="20" y="760" width="960" height="120" rx="8" fill="white" stroke="#ddd"/>
+  <text x="500" y="785" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Cardinality &amp; Optionality Legend</text>
+
+  <!-- Mandatory one -->
+  <line x1="60" y1="820" x2="120" y2="820" stroke="#555" stroke-width="2"/>
+  <line x1="120" y1="810" x2="120" y2="830" stroke="#555" stroke-width="2"/>
+  <line x1="60" y1="810" x2="60" y2="830" stroke="#555" stroke-width="2"/>
+  <text x="90" y="845" text-anchor="middle" font-size="10" fill="#333">1:1 (mandatory)</text>
+  <text x="90" y="858" text-anchor="middle" font-size="9" fill="#888">Both sides required</text>
+
+  <!-- One to many -->
+  <line x1="200" y1="820" x2="280" y2="820" stroke="#555" stroke-width="2"/>
+  <line x1="200" y1="810" x2="200" y2="830" stroke="#555" stroke-width="2"/>
+  <text x="290" y="820" font-size="14" fill="#555">⋈</text>
+  <text x="240" y="845" text-anchor="middle" font-size="10" fill="#333">1:M</text>
+  <text x="240" y="858" text-anchor="middle" font-size="9" fill="#888">One to many</text>
+
+  <!-- Zero or one -->
+  <line x1="380" y1="820" x2="460" y2="820" stroke="#555" stroke-width="2"/>
+  <circle cx="380" cy="820" r="5" fill="white" stroke="#555" stroke-width="2"/>
+  <text x="420" y="845" text-anchor="middle" font-size="10" fill="#333">0..1 (optional)</text>
+  <text x="420" y="858" text-anchor="middle" font-size="9" fill="#888">Optional one side</text>
+
+  <!-- Zero or many -->
+  <line x1="530" y1="820" x2="620" y2="820" stroke="#555" stroke-width="2" stroke-dasharray="5"/>
+  <circle cx="530" cy="820" r="5" fill="white" stroke="#555" stroke-width="2"/>
+  <text x="575" y="845" text-anchor="middle" font-size="10" fill="#333">0..M (optional)</text>
+  <text x="575" y="858" text-anchor="middle" font-size="9" fill="#888">Optional many side</text>
+
+  <!-- FK -->
+  <text x="700" y="815" font-size="11" fill="#333" font-weight="bold">🔑 Primary Key (PK)</text>
+  <text x="700" y="835" font-size="11" fill="#333" font-weight="bold">🔗 Foreign Key (FK)</text>
+  <text x="700" y="855" font-size="11" fill="#888">OPT = nullable / optional FK</text>
+
+  <!-- Footer -->
+  <rect x="0" y="880" width="1000" height="20" fill="#1a5276"/>
+  <text x="500" y="894" text-anchor="middle" font-size="10" fill="white">VRA File Management System — Schema ERD | Volta River Authority</text>
+</svg>

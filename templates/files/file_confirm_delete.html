@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item"><a href="{% url 'file_list' %}">File Repository</a></span>
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item active">Delete File</span>
+{% endblock %}
+
+{% block content %}
+<div class="confirm-card">
+    <div class="confirm-icon danger">🗑️</div>
+    <h2 class="confirm-title">Delete File?</h2>
+    <p class="confirm-message">
+        You are about to delete <strong>{{ file.file_name }}</strong>
+        (ID: {{ file.short_id }}). This action cannot be undone.
+    </p>
+    <div class="confirm-meta">
+        <span>Size: {{ file.file_size_display }}</span>
+        <span>Uploaded: {{ file.upload_date|date:"d M Y" }}</span>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="confirm-actions">
+            <button type="submit" class="btn btn-danger btn-lg">Yes, Delete File</button>
+            <a href="{% url 'file_detail' file.pk %}" class="btn btn-outline btn-lg">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

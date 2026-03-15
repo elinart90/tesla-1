@@ -1,0 +1,193 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item active">Dashboard</span>
+{% endblock %}
+
+{% block page_actions %}
+<div class="page-actions">
+    <a href="{% url 'file_upload' %}" class="btn btn-primary">⬆ Upload File</a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Stats Row -->
+<div class="stats-grid">
+    <div class="stat-card stat-blue">
+        <div class="stat-icon">📁</div>
+        <div class="stat-body">
+            <span class="stat-value">{{ total_files }}</span>
+            <span class="stat-label">Total Files</span>
+        </div>
+    </div>
+    <div class="stat-card stat-green">
+        <div class="stat-icon">⬆️</div>
+        <div class="stat-body">
+            <span class="stat-value">{{ uploaded_today }}</span>
+            <span class="stat-label">Uploaded Today</span>
+        </div>
+    </div>
+    <div class="stat-card stat-teal">
+        <div class="stat-icon">✅</div>
+        <div class="stat-body">
+            <span class="stat-value">{{ retrieved_files }}</span>
+            <span class="stat-label">Retrieved</span>
+        </div>
+    </div>
+    <div class="stat-card stat-amber">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-body">
+            <span class="stat-value">{{ pending_files }}</span>
+            <span class="stat-label">Pending Retrieval</span>
+        </div>
+    </div>
+    <div class="stat-card stat-red">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-body">
+            <span class="stat-value">{{ overdue_reminders }}</span>
+            <span class="stat-label">Overdue Reminders</span>
+        </div>
+    </div>
+    <div class="stat-card stat-purple">
+        <div class="stat-icon">🔔</div>
+        <div class="stat-body">
+            <span class="stat-value">{{ total_notifications }}</span>
+            <span class="stat-label">Notifications Sent</span>
+        </div>
+    </div>
+</div>
+
+<!-- Charts + Recent Files Row -->
+<div class="grid-2col">
+
+    <!-- Upload Trend Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">📈 Upload Trend (Last 7 Days)</h3>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+                <canvas id="uploadChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Breakdown -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">📊 File Status Breakdown</h3>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Files Table -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">🕒 Recent Files</h3>
+        <a href="{% url 'file_list' %}" class="btn btn-sm btn-outline">View All</a>
+    </div>
+    <div class="card-body table-wrapper">
+        {% if recent_files %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>File ID</th>
+                    <th>File Name</th>
+                    <th>Uploaded By</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Upload Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in recent_files %}
+                <tr>
+                    <td><span class="badge badge-id">{{ file.short_id }}</span></td>
+                    <td>
+                        <a href="{% url 'file_detail' file.pk %}" class="file-link">
+                            {{ file.file_name|truncatechars:35 }}
+                        </a>
+                    </td>
+                    <td>{{ file.uploaded_by.get_full_name|default:file.uploaded_by.username }}</td>
+                    <td><span class="file-type-badge">{{ file.file_type|upper }}</span></td>
+                    <td>
+                        <span class="status-badge status-{{ file.status }}">
+                            {{ file.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ file.upload_date|date:"d M Y, H:i" }}</td>
+                    <td>
+                        <a href="{% url 'file_retrieve' file.pk %}" class="btn btn-xs btn-success">⬇ Retrieve</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📂</div>
+            <p>No files uploaded yet.</p>
+            <a href="{% url 'file_upload' %}" class="btn btn-primary">Upload your first file</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Recent Retrievals -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">📋 Recent Retrieval Activity</h3>
+    </div>
+    <div class="card-body table-wrapper">
+        {% if recent_retrievals %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Retrieved By</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_retrievals %}
+                <tr>
+                    <td>{{ log.file.file_name|truncatechars:40 }}</td>
+                    <td>{{ log.retrieved_by.get_full_name|default:log.retrieved_by.username }}</td>
+                    <td>{{ log.retrieved_at|date:"d M Y, H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>No retrieval activity yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Upload Trend Chart
+const uploadLabels = [{% for d in uploads_per_day %}"{{ d.date }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+const uploadData = [{% for d in uploads_per_day %}{{ d.count }}{% if not forloop.last %},{% endif %}{% endfor %}];
+
+// Status Breakdown Chart
+const statusLabels = [{% for s in status_data %}"{{ s.status|capfirst }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+const statusData = [{% for s in status_data %}{{ s.count }}{% if not forloop.last %},{% endif %}{% endfor %}];
+
+window.VRA_CHART_DATA = { uploadLabels, uploadData, statusLabels, statusData };
+</script>
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

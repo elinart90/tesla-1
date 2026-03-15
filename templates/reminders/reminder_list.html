@@ -1,0 +1,68 @@
+{% extends "base/base.html" %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item active">Reminders</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">⏰ File Reminders</h3>
+        <span class="card-subtitle">3-day automatic reminders for unretrieved files</span>
+    </div>
+    <div class="card-body table-wrapper">
+        {% if page_obj %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Scheduled For</th>
+                    <th>Status</th>
+                    <th>Triggered At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reminder in page_obj %}
+                <tr>
+                    <td>
+                        <a href="{% url 'file_detail' reminder.file.pk %}">
+                            {{ reminder.file.file_name|truncatechars:35 }}
+                        </a>
+                        <small class="text-muted">{{ reminder.file.short_id }}</small>
+                    </td>
+                    <td>{{ reminder.scheduled_for|date:"d M Y, H:i" }}</td>
+                    <td>
+                        <span class="status-badge status-{{ reminder.status }}">
+                            {{ reminder.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ reminder.triggered_at|date:"d M Y, H:i"|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'file_detail' reminder.file.pk %}" class="btn btn-xs btn-outline">View File</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-wrapper">
+            <div class="pagination">
+                {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}" class="page-btn">‹</a>{% endif %}
+                <span class="page-btn active">{{ page_obj.number }}</span>
+                {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}" class="page-btn">›</a>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">⏰</div>
+            <p>No reminders scheduled yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

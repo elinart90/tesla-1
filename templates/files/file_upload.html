@@ -1,0 +1,116 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item"><a href="{% url 'file_list' %}">File Repository</a></span>
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item active">Upload File</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="upload-layout">
+    <div class="card upload-card">
+        <div class="card-header">
+            <h3 class="card-title">⬆ Upload New File</h3>
+        </div>
+        <div class="card-body">
+
+            <form method="post" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+
+                <!-- Drop Zone -->
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-content">
+                        <div class="drop-icon">📁</div>
+                        <p class="drop-primary">Drag & drop your file here</p>
+                        <p class="drop-secondary">or click to browse</p>
+                        <p class="drop-hint">PDF, Word, Excel, PowerPoint, Images, ZIP – Max 50MB</p>
+                    </div>
+                    <div class="drop-zone-input">{{ form.file }}</div>
+                </div>
+
+                <!-- File Preview -->
+                <div class="file-preview-row" id="filePreview" style="display:none;">
+                    <div class="preview-icon" id="previewIcon">📄</div>
+                    <div class="preview-info">
+                        <span class="preview-name" id="previewName"></span>
+                        <span class="preview-size" id="previewSize"></span>
+                    </div>
+                    <button type="button" class="preview-remove" id="removeFile">✕</button>
+                </div>
+
+                {% if form.file.errors %}
+                <p class="form-error">{{ form.file.errors }}</p>
+                {% endif %}
+
+                <!-- Metadata Fields -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label class="form-label" for="id_file_name">File Name (Optional)</label>
+                        {{ form.file_name }}
+                        <span class="form-hint">Leave blank to use the original filename.</span>
+                        {% if form.file_name.errors %}<p class="form-error">{{ form.file_name.errors }}</p>{% endif %}
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label class="form-label" for="id_category">Category</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}<p class="form-error">{{ form.category.errors }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="id_tags">Tags</label>
+                            {{ form.tags }}
+                            {% if form.tags.errors %}<p class="form-error">{{ form.tags.errors }}</p>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="id_description">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}<p class="form-error">{{ form.description.errors }}</p>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                        <span id="submitText">⬆ Upload File</span>
+                        <span id="submitSpinner" class="spinner-sm" style="display:none;"></span>
+                    </button>
+                    <a href="{% url 'file_list' %}" class="btn btn-outline btn-lg">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="upload-info-panel">
+        <div class="info-card">
+            <h4 class="info-title">📋 Upload Guidelines</h4>
+            <ul class="info-list">
+                <li>Maximum file size: <strong>50 MB</strong></li>
+                <li>Allowed formats: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, ZIP</li>
+                <li>Each file receives a unique <strong>File ID</strong> upon upload</li>
+                <li>A <strong>confirmation</strong> email and SMS will be sent immediately</li>
+                <li>A <strong>reminder</strong> will be sent after 3 days if not retrieved</li>
+            </ul>
+        </div>
+        <div class="info-card">
+            <h4 class="info-title">🔔 Notifications</h4>
+            <p>After upload, you will receive:</p>
+            <ul class="info-list">
+                <li>📧 Email confirmation</li>
+                <li>📱 SMS confirmation</li>
+                <li>⏰ Reminder after 3 days (if not retrieved)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/upload.js' %}"></script>
+{% endblock %}

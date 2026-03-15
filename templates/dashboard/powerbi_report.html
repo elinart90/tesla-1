@@ -1,0 +1,97 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-sep">/</span>
+<span class="breadcrumb-item active">Power BI Reports</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">📈 VRA File Management Analytics</h3>
+        <span class="badge badge-powerbi">Powered by Power BI</span>
+    </div>
+    <div class="card-body">
+        {% if powerbi_error %}
+        <div class="powerbi-error">
+            <div class="error-icon">⚠️</div>
+            <h4>Power BI Report Unavailable</h4>
+            <p>Could not load the Power BI report. Ensure your Power BI environment variables are configured correctly.</p>
+            <details class="error-details">
+                <summary>Error Details</summary>
+                <code>{{ powerbi_error }}</code>
+            </details>
+            <div class="mt-3">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+            </div>
+        </div>
+        {% elif embed_token and embed_url %}
+        <div class="powerbi-container" id="powerbi-container">
+            <div class="powerbi-loading" id="pbi-loading">
+                <div class="spinner"></div>
+                <p>Loading Power BI Report...</p>
+            </div>
+            <div id="pbi-report-embed" class="powerbi-embed"></div>
+        </div>
+        {% else %}
+        <div class="powerbi-setup">
+            <div class="setup-icon">🔧</div>
+            <h4>Power BI Not Configured</h4>
+            <p>Power BI integration requires the following environment variables to be set:</p>
+            <ul class="setup-list">
+                <li><code>POWERBI_CLIENT_ID</code> – Azure AD Application Client ID</li>
+                <li><code>POWERBI_CLIENT_SECRET</code> – Azure AD Client Secret</li>
+                <li><code>POWERBI_TENANT_ID</code> – Azure AD Tenant ID</li>
+                <li><code>POWERBI_WORKSPACE_ID</code> – Power BI Workspace (Group) ID</li>
+                <li><code>POWERBI_REPORT_ID</code> – Power BI Report ID</li>
+            </ul>
+            <p>Refer to the <strong>Power BI Integration Guide</strong> in the project documentation.</p>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline">← Return to Dashboard</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{% if embed_token and embed_url %}
+<script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.22.1/dist/powerbi.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var embedContainer = document.getElementById('pbi-report-embed');
+    var loadingEl = document.getElementById('pbi-loading');
+
+    var models = window['powerbi-client'].models;
+    var config = {
+        type: 'report',
+        tokenType: models.TokenType.Embed,
+        accessToken: '{{ embed_token|escapejs }}',
+        embedUrl: '{{ embed_url|escapejs }}',
+        id: '{{ report_id|escapejs }}',
+        settings: {
+            navContentPaneEnabled: true,
+            filterPaneEnabled: true,
+        }
+    };
+
+    var powerbi = new window['powerbi-client'].service.Service(
+        window['powerbi-client'].factories.hpmFactory,
+        window['powerbi-client'].factories.wpmpFactory,
+        window['powerbi-client'].factories.routerFactory
+    );
+
+    var report = powerbi.embed(embedContainer, config);
+    report.on('loaded', function () {
+        if (loadingEl) loadingEl.style.display = 'none';
+    });
+    report.on('error', function (event) {
+        if (loadingEl) loadingEl.innerHTML = '<p class="text-error">Failed to load report. Check console for details.</p>';
+        console.error('Power BI error:', event.detail);
+    });
+});
+</script>
+{% endif %}
+{% endblock %}
